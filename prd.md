@@ -21,7 +21,6 @@ Berdasarkan seluruh slide presentasi “Green Modern Bold Nature Forest Presenta
 Membuat aplikasi yang **bisa dipakai oleh petani awam sekalipun** (gaptek, usia 35–60 tahun, HP low-end, sinyal lemah). Petani tidak perlu belajar rumit — cukup buka HP, tekan tombol besar, dan selesai. Semua data tersimpan otomatis, notifikasi lewat WhatsApp, dan bisa dipakai tanpa internet di sawah.
 
 ## 2. Requirements
-
 ### 2.1 Target Pengguna
 - **Pengguna Utama**: Petani Mandiri & Ketua Kelompok Tani  
 - **Pengguna Pendukung**: Mentor Wilayah & Admin Amati  
@@ -46,7 +45,6 @@ Membuat aplikasi yang **bisa dipakai oleh petani awam sekalipun** (gaptek, usia 
 - Fokus utama: Kebun Pangan (nanti bisa tambah ternak/ikan/lebah)  
 
 ## 3. Core Features (Simple tapi Luar Biasa)
-
 ### 3.1 Assessment & Register
 - Form langkah demi langkah (7 tab sederhana)  
 - Generate token otomatis  
@@ -93,13 +91,56 @@ Membuat aplikasi yang **bisa dipakai oleh petani awam sekalipun** (gaptek, usia 
    - Tekan tombol besar “Catat Panen” atau “Lapor Kerusakan” (bisa offline)  
 5. Mentor langsung lihat & balas via sistem + WhatsApp  
 
-## 5. Architecture
+
+
+## 5. Database Schema (Utama)
+
+Berikut adalah struktur database utama:
+
 ```mermaid
-graph TD
-    A[Petani - HP Android Low-End] --> B[Frontend: Next.js + Tailwind PWA]
-    B --> C[Service Worker + IndexedDB Offline]
-    C --> D[Supabase Backend Realtime]
-    D --> E[(PostgreSQL Database)]
-    D --> F[WhatsApp Business API]
-    D --> G[AI Assistant Grok/OpenAI]
-    H[Mentor/Admin] --> D
+erDiagram
+    users {
+        uuid id PK
+        string phone
+        string name
+        string role "Petani/Mentor/Admin"
+        string token
+        string level "Basic/Intermediate/Advanced"
+    }
+    communities {
+        uuid id PK
+        uuid user_id FK
+        string location
+        string commodities
+        decimal target_kg
+        decimal dana_total
+    }
+    harvests {
+        uuid id PK
+        uuid community_id FK
+        string commodity
+        date harvest_date
+        int weight_kg
+        string quality "Grade A/B"
+        string photo_url
+    }
+    damages {
+        uuid id PK
+        uuid community_id FK
+        string description
+        string priority "Low/Medium/High"
+        date reported_date
+        string status "Open/Closed"
+    }
+    reports {
+        uuid id PK
+        uuid community_id FK
+        string type
+        decimal amount
+        string status "Approved/Revisions/Rejected"
+    }
+
+    users ||--o{ communities : "memiliki"
+    communities ||--o{ harvests : "menghasilkan"
+    communities ||--o{ damages : "melaporkan kerusakan"
+    communities ||--o{ reports : "membuat laporan"
