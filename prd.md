@@ -106,8 +106,3 @@ graph TD
     D --> F[WhatsApp Business API]
     D --> G[AI Assistant Grok/OpenAI]
     H[Mentor/Admin] --> D
-
----
-## 6. Database Schema (Utama)
-
-![Database ER Diagram](mermaid-diagram.svg)
