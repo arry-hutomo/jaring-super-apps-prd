@@ -7,15 +7,14 @@
 **Product Owner**: Amati Indonesia  
 
 ## 1. Overview
-
 Jaring Super Apps adalah platform **sederhana tapi luar biasa** yang dibuat khusus untuk **Petani Mandiri** dan kelompok tani di seluruh Nusantara.  
 
-Berdasarkan seluruh slide presentasi “Green Modern Bold Nature Forest Presentation.pdf”, aplikasi ini menyatukan dalam **satu tempat saja**:
-- Assessment komunitas lokal
-- Dashboard monitoring lahan & dana
-- Pusat pelaporan
-- Catatan hasil panen
-- Manajemen kerusakan lahan
+Berdasarkan seluruh slide presentasi “Green Modern Bold Nature Forest Presentation.pdf”, aplikasi ini menyatukan dalam **satu tempat saja**:  
+- Assessment komunitas lokal  
+- Dashboard monitoring lahan & dana  
+- Pusat pelaporan  
+- Catatan hasil panen  
+- Manajemen kerusakan lahan  
 - Bantuan mentor + AI  
 
 **Tujuan utama**:  
@@ -86,7 +85,6 @@ Membuat aplikasi yang **bisa dipakai oleh petani awam sekalipun** (gaptek, usia 
 - Onboarding interaktif pertama kali  
 
 ## 4. User Flow (Sangat Sederhana)
-
 1. Buka aplikasi → Login dengan nomor HP (1 klik)  
 2. Jika baru → Assessment dibimbing langkah demi langkah  
 3. Masuk Dashboard (paling sering dibuka)  
@@ -96,7 +94,6 @@ Membuat aplikasi yang **bisa dipakai oleh petani awam sekalipun** (gaptek, usia 
 5. Mentor langsung lihat & balas via sistem + WhatsApp  
 
 ## 5. Architecture
-
 ```mermaid
 graph TD
     A[Petani - HP Android Low-End] --> B[Frontend: Next.js + Tailwind PWA]
@@ -106,3 +103,53 @@ graph TD
     D --> F[WhatsApp Business API]
     D --> G[AI Assistant Grok/OpenAI]
     H[Mentor/Admin] --> D
+erDiagram
+    users {
+        uuid id PK
+        string phone
+        string name
+        string role "Petani/Mentor/Admin"
+        string token
+        string level "Basic/Intermediate/Advanced"
+    }
+    communities {
+        uuid id PK
+        uuid user_id FK
+        string location
+        string commodities
+        decimal target_kg
+        decimal dana_total
+    }
+    harvests {
+        uuid id PK
+        uuid community_id FK
+        string commodity
+        date harvest_date
+        int weight_kg
+        string quality "Grade A/B"
+        string photo_url
+    }
+    damages {
+        uuid id PK
+        uuid community_id FK
+        string description
+        string priority "Low/Medium/High"
+        date reported_date
+        string status "Open/Closed"
+    }
+    reports {
+        uuid id PK
+        uuid community_id FK
+        string type
+        decimal amount
+        string status "Approved/Revisions/Rejected"
+    }
+
+    users ||--o{ communities : "memiliki"
+    communities ||--o{ harvests : "menghasilkan"
+    communities ||--o{ damages : "melaporkan kerusakan"
+    communities ||--o{ reports : "membuat laporan"
+
+
+
+
